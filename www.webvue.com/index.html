@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户</title>
+</head>
+<body>
+
+  <div id="app">
+    <p>添加用户</p>
+    <ul>
+      <template v-for="(item, index) of items">
+        <li>
+          <span>
+            <input v-model="item.username" />
+          </span> --
+          <span @click="edit(item.id)">修改</span> |
+          <span>删除</span>
+        </li>
+      </template>
+    </ul>
+
+  </div>
+
+  <script src="./js/vue.js"></script>
+  <script src="./js/axios.js"></script>
+  <script>
+    axios.defaults.baseURL = 'http://www.laravel.com';
+    new Vue({
+      el: '#app',
+      data: {
+        items: []
+      },
+      // 生命周期
+      mounted() {
+        axios.get('/users').then(({ data }) => {
+          //let {data} = ret
+          console.log({data});
+          this.items = data;
+        })
+      },
+      methods: {
+        edit(id = 0) {
+          let item = this.items.filter(value => {
+            return value.id == id;
+          })[0];
+          axios.put(`/users/${id}`,item).then(({ data }) => {
+            console.log(data);
+          })
+        }
+      }
+    })
+
+  </script>
+</body>
+
+</html>
